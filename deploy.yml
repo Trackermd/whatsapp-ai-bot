@@ -1,0 +1,33 @@
+name: Deploy WhatsApp Bot
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # GitHub's Ubuntu runner
+    
+    steps:
+      # Step 1: Checkout the code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Or the version you're using
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Deploy to your server (using SSH for example)
+      - name: Deploy to Server
+        run: |
+          ssh -i ~/.ssh/id_rsa user@your-server-ip 'cd /path/to/your/bot && git pull && npm install && pm2 restart bot'
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Secret for your private SSH key
+          HOST: ${{ secrets.HOST }}  # Your server's IP or domai
